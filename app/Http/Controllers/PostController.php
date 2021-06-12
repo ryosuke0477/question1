@@ -44,9 +44,14 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $item = Post::find($post);
+        Foreach ($item as $comment)
+        {
+            $param = $comment->comments;
+        }
         if ($item) {
             return response()->json([
-                'data' => $item
+                'data' => $item,
+                'param' => $param
             ], 200);
         } else {
             return response()->json([
