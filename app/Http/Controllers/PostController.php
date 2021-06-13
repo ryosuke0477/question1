@@ -15,6 +15,20 @@ class PostController extends Controller
     public function index()
     {
         $items = Post::all();
+        foreach ($items as $item) {
+            $count = 0;
+            if($item->likes != null){
+            foreach ($item->likes as $like) {
+                $count = $count + $like->add;
+                }
+            }
+            $update = [
+                'count' => $count,
+            ];
+            Post::where('id', $item->id)->update($update);
+        }
+
+        $items = Post::all();
         return response()->json([
             'data' => $items
         ], 200);
@@ -69,8 +83,13 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        $item = Post::find($post->id);
+        $count = 0;
+        foreach ($item->likes as $like) {
+            $count = $count + $like->add;
+        }
         $update = [
-            'count' => $post->count + 1,
+            'count' => $count,
         ];
         $item = Post::where('id', $post->id)->update($update);
         if ($item) {
